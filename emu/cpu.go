@@ -2,52 +2,19 @@ package emu
 
 import "fmt"
 
-type Register uint8
-
-const (
-	REG_A Register = iota
-	REG_B
-	REG_C
-	REG_D
-	REG_E
-	REG_F
-	REG_H
-	REG_L
-)
-
-func (r Register) String() string {
-	switch r {
-	case REG_A:
-		return "A"
-	case REG_B:
-		return "B"
-	case REG_C:
-		return "C"
-	case REG_D:
-		return "D"
-	case REG_E:
-		return "E"
-	case REG_F:
-		return "F"
-	case REG_H:
-		return "H"
-	case REG_L:
-		return "L"
-	}
-	return ""
-}
-
 type cpu struct {
 	programCounter uint16
 	stackPointer   uint16
 	reg            map[Register]uint8
+	flags          map[Flag]bool
 }
 
 func NewCpu() cpu {
 	return cpu{
-		stackPointer:   0,
-		programCounter: 0,
-		reg: map[Register]uint8{REG_A: 0, REG_B: 0, REG_C: 0, REG_D: 0, REG_E: 0, REG_F: 0, REG_H: 0, REG_L: 0},
+		stackPointer:   0xFFFE,
+		programCounter: 0x100,
+		reg:            map[Register]uint8{REG_A: 0, REG_B: 0, REG_C: 0, REG_D: 0, REG_E: 0, REG_F: 0, REG_H: 0, REG_L: 0},
+		flags:          map[Flag]bool{FLAG_ZERO: false, FLAG_SUBTRACT: false, FLAG_HALF_CARRY: false, FLAG_CARRY: false},
 	}
 }
 
@@ -72,4 +39,8 @@ func (c cpu) Reg16(l Register, r Register) uint16 {
 	}
 
 	return (uint16(c.Reg8(l)) << 8) + uint16(c.Reg8(r))
+}
+
+func (c cpu) Flag(f Flag) bool {
+	return c.flags[f]
 }
