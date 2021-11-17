@@ -1,8 +1,8 @@
 package main
 
-import "github.com/WiredSound/goboy/emu"
+import "github.com/WiredSound/goboy/cpu"
 
 func main() {
-	cpu := emu.NewCpu()
-	cpu.Reg16(emu.REG_A, emu.REG_F)
+	c := cpu.New()
+	c.Reg16(cpu.REG_A, cpu.REG_F)
 }

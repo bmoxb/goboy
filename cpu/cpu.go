@@ -1,6 +1,9 @@
-package emu
+package cpu
 
 import "fmt"
+
+const INSTRUCTIONS_PER_SECOND = 1_050_000 // 1.05 MHz
+const CYCLE_DURATION = 1.0 / INSTRUCTIONS_PER_SECOND
 
 type cpu struct {
 	programCounter uint16
@@ -9,10 +12,10 @@ type cpu struct {
 	flags          map[Flag]bool
 }
 
-func NewCpu() cpu {
+func New() cpu {
 	return cpu{
-		stackPointer:   0xFFFE,
 		programCounter: 0x100,
+		stackPointer:   0xFFFE,
 		reg:            map[Register]uint8{REG_A: 0, REG_B: 0, REG_C: 0, REG_D: 0, REG_E: 0, REG_F: 0, REG_H: 0, REG_L: 0},
 		flags:          map[Flag]bool{FLAG_ZERO: false, FLAG_SUBTRACT: false, FLAG_HALF_CARRY: false, FLAG_CARRY: false},
 	}

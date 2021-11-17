@@ -1,4 +1,4 @@
-package emu
+package cpu
 
 type Register uint8
 
