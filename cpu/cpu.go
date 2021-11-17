@@ -9,7 +9,6 @@ type cpu struct {
 	programCounter uint16
 	stackPointer   uint16
 	reg            map[Register]uint8
-	flags          map[Flag]bool
 }
 
 func New() cpu {
@@ -17,7 +16,6 @@ func New() cpu {
 		programCounter: 0x100,
 		stackPointer:   0xFFFE,
 		reg:            map[Register]uint8{REG_A: 0, REG_B: 0, REG_C: 0, REG_D: 0, REG_E: 0, REG_F: 0, REG_H: 0, REG_L: 0},
-		flags:          map[Flag]bool{FLAG_ZERO: false, FLAG_SUBTRACT: false, FLAG_HALF_CARRY: false, FLAG_CARRY: false},
 	}
 }
 
@@ -45,5 +43,18 @@ func (c cpu) Reg16(l Register, r Register) uint16 {
 }
 
 func (c cpu) Flag(f Flag) bool {
-	return c.flags[f]
+	flags := c.Reg8(REG_F)
+
+	switch f {
+	case FLAG_ZERO:
+		return (flags & 0b10000000) > 0
+	case FLAG_SUBTRACT:
+		return (flags & 0b01000000) > 0
+	case FLAG_HALF_CARRY:
+		return (flags & 0b00100000) > 0
+	case FLAG_CARRY:
+		return (flags & 0b00010000) > 0
+	}
+
+	return false
 }
