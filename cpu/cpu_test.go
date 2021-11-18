@@ -7,7 +7,7 @@ import (
 )
 
 func TestRegisterAccess(t *testing.T) {
-	c := cpu{
+	c := Cpu{
 		programCounter: 0,
 		stackPointer:   0,
 		reg:            map[Register]uint8{REG_A: 0xAA, REG_F: 0xBB, REG_B: 0x12, REG_C: 0x34, REG_D: 1, REG_E: 2, REG_H: 0, REG_L: 0},

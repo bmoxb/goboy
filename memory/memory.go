@@ -2,20 +2,20 @@ package memory
 
 import "github.com/WiredSound/goboy/cartridge"
 
-type memory struct {
+type Memory struct {
 	cart            cartridge.Cartridge // game cartridge
 	wram            [2][4096]uint8      // working RAM, two regions of 4 KiB
 	hram            [127]uint8          // high RAM
 	interruptEnable bool                // interrupt enable register (IE)
 }
 
-func New() memory {
-	return memory{
+func New() Memory {
+	return Memory{
 		interruptEnable: false,
 	}
 }
 
-func (m memory) Read8(addr uint16) uint8 {
+func (m Memory) Read8(addr uint16) uint8 {
 	if addr < 0x8000 { // Cartridge
 		return m.cart.Read8(addr)
 	} else if addr < 0xA000 { // Video memory
