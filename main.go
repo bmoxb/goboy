@@ -4,14 +4,15 @@ import (
 	"log"
 	"os"
 
+	"github.com/WiredSound/goboy/gameboy"
 	"github.com/WiredSound/goboy/media"
 
 	"github.com/veandco/go-sdl2/sdl"
 )
 
 const (
-	SCREEN_WIDTH  = 160
-	SCREEN_HEIGHT = 144
+	GAMEBOY_SCREEN_WIDTH  = 160
+	GAMEBOY_SCREEN_HEIGHT = 144
 )
 
 func main() {
@@ -23,6 +24,13 @@ func main() {
 	path := os.Args[1]
 
 	log.Printf("Will open ROM at path: %s", path)
+
+	sdlColourMap := map[media.Colour][3]uint8{
+		media.COLOUR_BLACK: {0, 0, 0},
+		media.COLOUR_DARK:  {100, 100, 100},
+		media.COLOUR_LIGHT: {200, 200, 200},
+		media.COLOUR_WHITE: {255, 255, 255},
+	}
 
 	sdlKeyMap := map[sdl.Keycode]media.Button{
 		sdl.K_ESCAPE:    media.BUTTON_QUIT,
@@ -36,20 +44,26 @@ func main() {
 		sdl.K_RETURN:    media.BUTTON_START,
 	}
 
-	context, err := media.NewSDL2("GoBoy", SCREEN_WIDTH, SCREEN_HEIGHT, sdlKeyMap)
+	context, err := media.NewSDL2("GoBoy", GAMEBOY_SCREEN_WIDTH, GAMEBOY_SCREEN_HEIGHT, 6, sdlColourMap, sdlKeyMap)
 	if err != nil {
 		panic("Failed to initialise SDL2 context")
 	}
-	log.Printf("Created multimedia context with window dimensions: %dx%d", SCREEN_WIDTH, SCREEN_HEIGHT)
+	windowWidth, windowHeight := context.WindowSize()
+	log.Printf("Created multimedia context with window dimensions: %dx%d", windowWidth, windowHeight)
 
 	defer func() {
 		context.Destroy()
 		log.Printf("Destroyed multimedia context")
 	}()
 
-	log.Printf("Beginning game loop...")
+	context.Plot(GAMEBOY_SCREEN_WIDTH-1, GAMEBOY_SCREEN_HEIGHT-1, media.COLOUR_LIGHT)
+	context.Present()
+
+	log.Printf("Beginning game loop")
+
+	gb := gameboy.New()
 
 	for buttons := map[media.Button]bool{}; !buttons[media.BUTTON_QUIT]; buttons = context.Update() {
-		log.Println(buttons)
+		gb.Update(context, buttons)
 	}
 }

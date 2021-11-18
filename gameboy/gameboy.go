@@ -2,6 +2,7 @@ package gameboy
 
 import (
 	"github.com/WiredSound/goboy/cpu"
+	"github.com/WiredSound/goboy/media"
 	"github.com/WiredSound/goboy/memory"
 )
 
@@ -17,6 +18,4 @@ func New() gameboy {
 	}
 }
 
-func (g gameboy) update(window gfx.Window) {
-
-}
+func (g gameboy) Update(context media.Context, buttons map[media.Button]bool) {}
