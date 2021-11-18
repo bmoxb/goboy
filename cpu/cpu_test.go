@@ -30,3 +30,22 @@ func TestRegisterAccess(t *testing.T) {
 		assert.Panics(t, func() { c.Reg16(pair[0], pair[1]) }, "Should panic when attempting to access invalid pair of 8-bit registers")
 	}
 }
+
+func TestFlagAccess(t *testing.T) {
+	c := Cpu{
+		programCounter: 0,
+		stackPointer:   0,
+		reg:            map[Register]uint8{REG_F: 0b10100101},
+	}
+
+	data := map[Flag]bool{
+		FLAG_ZERO:       true,
+		FLAG_SUBTRACT:   false,
+		FLAG_HALF_CARRY: true,
+		FLAG_CARRY:      false,
+	}
+
+	for flag, expected := range data {
+		assert.Equal(t, c.Flag(flag), expected, "Access individual CPU flag")
+	}
+}
