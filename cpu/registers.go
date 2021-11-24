@@ -1,58 +1,100 @@
 package cpu
 
-type Register uint8
+type Register8 uint8
 
 const (
-	REG_A Register = iota
-	REG_B
-	REG_C
-	REG_D
-	REG_E
-	REG_F
-	REG_H
-	REG_L
+	RegA Register8 = iota
+	RegB
+	RegC
+	RegD
+	RegE
+	RegF
+	RegH
+	RegL
 )
 
-func (r Register) String() string {
+func (r Register8) String() string {
 	switch r {
-	case REG_A:
+	case RegA:
 		return "A"
-	case REG_B:
+	case RegB:
 		return "B"
-	case REG_C:
+	case RegC:
 		return "C"
-	case REG_D:
+	case RegD:
 		return "D"
-	case REG_E:
+	case RegE:
 		return "E"
-	case REG_F:
+	case RegF:
 		return "F"
-	case REG_H:
+	case RegH:
 		return "H"
-	case REG_L:
+	case RegL:
 		return "L"
 	}
 	return ""
 }
 
+type Register16 interface {
+	String() string
+	MostSigComponent() Register8
+	LeastSigComponent() Register8
+}
+
+type RegStackPointer struct{}
+
+func (r RegStackPointer) String() string               { return "SP" }
+func (r RegStackPointer) MostSigComponent() Register8  { panic("") }
+func (r RegStackPointer) LeastSigComponent() Register8 { panic("") }
+
+type RegProgramCounter struct{}
+
+func (r RegProgramCounter) String() string               { return "PC" }
+func (r RegProgramCounter) MostSigComponent() Register8  { panic("") }
+func (r RegProgramCounter) LeastSigComponent() Register8 { panic("") }
+
+type RegAF struct{}
+
+func (r RegAF) String() string               { return "AL" }
+func (r RegAF) MostSigComponent() Register8  { return RegA }
+func (r RegAF) LeastSigComponent() Register8 { return RegF }
+
+type RegBC struct{}
+
+func (r RegBC) String() string               { return "BC" }
+func (r RegBC) MostSigComponent() Register8  { return RegB }
+func (r RegBC) LeastSigComponent() Register8 { return RegC }
+
+type RegDE struct{}
+
+func (r RegDE) String() string               { return "DB" }
+func (r RegDE) MostSigComponent() Register8  { return RegD }
+func (r RegDE) LeastSigComponent() Register8 { return RegE }
+
+type RegHL struct{}
+
+func (r RegHL) String() string               { return "HL" }
+func (r RegHL) MostSigComponent() Register8  { return RegH }
+func (r RegHL) LeastSigComponent() Register8 { return RegL }
+
 type Flag uint8
 
 const (
-	FLAG_ZERO Flag = iota
-	FLAG_SUBTRACT
-	FLAG_HALF_CARRY
-	FLAG_CARRY
+	FlagZero Flag = iota
+	FlagSubtract
+	FlagHalfCarry
+	FlagCarry
 )
 
 func (f Flag) String() string {
 	switch f {
-	case FLAG_ZERO:
+	case FlagZero:
 		return "Z"
-	case FLAG_SUBTRACT:
+	case FlagSubtract:
 		return "N"
-	case FLAG_HALF_CARRY:
+	case FlagHalfCarry:
 		return "H"
-	case FLAG_CARRY:
+	case FlagCarry:
 		return "C"
 	}
 	return ""

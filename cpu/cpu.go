@@ -1,6 +1,8 @@
 package cpu
 
-import "fmt"
+import (
+	"github.com/WiredSound/goboy/memory"
+)
 
 const INSTRUCTIONS_PER_SECOND = 1_050_000 // 1.05 MHz
 const CYCLE_DURATION = 1.0 / INSTRUCTIONS_PER_SECOND
@@ -8,53 +10,40 @@ const CYCLE_DURATION = 1.0 / INSTRUCTIONS_PER_SECOND
 type Cpu struct {
 	programCounter uint16
 	stackPointer   uint16
-	reg            map[Register]uint8
+	reg            map[Register8]uint8
 }
 
 func New() Cpu {
 	return Cpu{
 		programCounter: 0x100,
 		stackPointer:   0xFFFE,
-		reg:            map[Register]uint8{REG_A: 0, REG_B: 0, REG_C: 0, REG_D: 0, REG_E: 0, REG_F: 0, REG_H: 0, REG_L: 0},
+		reg:            map[Register8]uint8{RegA: 0, RegB: 0, RegC: 0, RegD: 0, RegE: 0, RegF: 0, RegH: 0, RegL: 0},
 	}
 }
 
-func (c Cpu) Reg8(r Register) uint8 {
+func (c Cpu) Reg8(r Register8) uint8 {
 	return c.reg[r]
 }
 
-func (c Cpu) Reg16(l Register, r Register) uint16 {
-	pair := [2]Register{l, r}
-
-	allowedPairs := map[[2]Register]bool{
-		{REG_A, REG_F}: true,
-		{REG_B, REG_C}: true,
-		{REG_D, REG_E}: true,
-		{REG_H, REG_L}: true,
-	}
-
-	_, validPair := allowedPairs[pair]
-
-	if !validPair {
-		panic(fmt.Sprintf("Invalid combination of 8-bit registers to access: %s%s", l, r))
-	}
-
-	return (uint16(c.Reg8(l)) << 8) + uint16(c.Reg8(r))
+func (c Cpu) Reg16(r Register16) uint16 {
+	return (uint16(c.Reg8(r.MostSigComponent())) << 8) + uint16(c.Reg8(r.LeastSigComponent()))
 }
 
 func (c Cpu) Flag(f Flag) bool {
-	flags := c.Reg8(REG_F)
+	flags := c.Reg8(RegF)
 
 	switch f {
-	case FLAG_ZERO:
+	case FlagZero:
 		return (flags & 0b10000000) > 0
-	case FLAG_SUBTRACT:
+	case FlagSubtract:
 		return (flags & 0b01000000) > 0
-	case FLAG_HALF_CARRY:
+	case FlagHalfCarry:
 		return (flags & 0b00100000) > 0
-	case FLAG_CARRY:
+	case FlagCarry:
 		return (flags & 0b00010000) > 0
 	}
 
 	return false
 }
+
+func (c Cpu) Tick(mem *memory.Memory) {}
