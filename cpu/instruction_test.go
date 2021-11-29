@@ -8,23 +8,23 @@ import (
 
 func TestArithmeticLogicInstrCycles(t *testing.T) {
 	dataRegA := map[Operand]int{
-		OpReg8{reg: RegA}: 1,
-		OpReg8{reg: RegB}: 1,
-		OpReg8{reg: RegC}: 1,
-		OpReg8{reg: RegD}: 1,
-		OpReg8{reg: RegE}: 1,
-		OpReg8{reg: RegH}: 1,
-		OpReg8{reg: RegL}: 1,
-		// TODO: OpReg16{reg: RegHL{}}:  2,
-		OpImmediate8{value: 0}: 2,
+		OpReg8{reg: RegA}:                        1,
+		OpReg8{reg: RegB}:                        1,
+		OpReg8{reg: RegC}:                        1,
+		OpReg8{reg: RegD}:                        1,
+		OpReg8{reg: RegE}:                        1,
+		OpReg8{reg: RegH}:                        1,
+		OpReg8{reg: RegL}:                        1,
+		OpIndex{index: IndexReg16{reg: RegHL{}}}: 2,
+		OpImm8{value: 0}:                         2,
 	}
 
 	dataExtended := map[[2]Operand]int{
-		{OpReg16{reg: RegHL{}}, OpReg16{reg: RegBC{}}}:            2,
-		{OpReg16{reg: RegHL{}}, OpReg16{reg: RegDE{}}}:            2,
-		{OpReg16{reg: RegHL{}}, OpReg16{reg: RegHL{}}}:            2,
-		{OpReg16{reg: RegHL{}}, OpReg16{reg: RegStackPointer{}}}:  2,
-		{OpReg16{reg: RegStackPointer{}}, OpImmediate8{value: 0}}: 4,
+		{OpReg16{reg: RegHL{}}, OpReg16{reg: RegBC{}}}:           2,
+		{OpReg16{reg: RegHL{}}, OpReg16{reg: RegDE{}}}:           2,
+		{OpReg16{reg: RegHL{}}, OpReg16{reg: RegHL{}}}:           2,
+		{OpReg16{reg: RegHL{}}, OpReg16{reg: RegStackPointer{}}}: 2,
+		{OpReg16{reg: RegStackPointer{}}, OpImm8{value: 0}}:      4,
 	}
 
 	fullData := map[[2]Operand]int{}
@@ -61,18 +61,18 @@ func TestArithmeticLogicInstrCycles(t *testing.T) {
 	}
 
 	incDecData := map[Operand]int{
-		OpReg8{reg: RegA}: 1,
-		OpReg8{reg: RegB}: 1,
-		OpReg8{reg: RegC}: 1,
-		OpReg8{reg: RegD}: 1,
-		OpReg8{reg: RegE}: 1,
-		OpReg8{reg: RegH}: 1,
-		OpReg8{reg: RegL}: 1,
-		// TODO: OpReg16{reg: RegHL{}}: 3,
-		OpReg16{reg: RegBC{}}: 2,
-		OpReg16{reg: RegDE{}}: 2,
-		// TODO: OpReg16{reg: RegHL{}}: 2,
-		OpReg16{reg: RegStackPointer{}}: 2,
+		OpReg8{reg: RegA}:                        1,
+		OpReg8{reg: RegB}:                        1,
+		OpReg8{reg: RegC}:                        1,
+		OpReg8{reg: RegD}:                        1,
+		OpReg8{reg: RegE}:                        1,
+		OpReg8{reg: RegH}:                        1,
+		OpReg8{reg: RegL}:                        1,
+		OpIndex{index: IndexReg16{reg: RegHL{}}}: 3,
+		OpReg16{reg: RegBC{}}:                    2,
+		OpReg16{reg: RegDE{}}:                    2,
+		OpReg16{reg: RegHL{}}:                    2,
+		OpReg16{reg: RegStackPointer{}}:          2,
 	}
 
 	incDecBuilder := [](func(Operand) Instruction){

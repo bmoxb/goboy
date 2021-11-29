@@ -4,6 +4,20 @@ import (
 	"fmt"
 )
 
+// Indicies
+
+type Index interface {
+	String() string
+	index()
+}
+
+type IndexReg16 struct{ reg Register16 }
+
+func (i IndexReg16) String() string { return i.reg.String() }
+func (i IndexReg16) index()         {}
+
+// Operands
+
 type Operand interface {
 	String() string
 	operand()
@@ -19,10 +33,17 @@ type OpReg16 struct{ reg Register16 }
 func (o OpReg16) String() string { return o.reg.String() }
 func (o OpReg16) operand()       {}
 
-type OpImmediate8 struct{ value uint8 }
+type OpImm8 struct{ value uint8 }
 
-func (o OpImmediate8) String() string { return fmt.Sprintf("%d", o.value) }
-func (o OpImmediate8) operand()       {}
+func (o OpImm8) String() string { return fmt.Sprintf("%d", o.value) }
+func (o OpImm8) operand()       {}
+
+type OpIndex struct{ index Index }
+
+func (o OpIndex) String() string { return "(" + o.index.String() + ")" }
+func (o OpIndex) operand()       {}
+
+// Instructions
 
 type Instruction interface {
 	String() string
@@ -46,12 +67,12 @@ func binaryArithmeticCycles(operand1, operand2 Operand) int {
 	switch operand1 {
 	case OpReg8{reg: RegA}:
 		switch operand2.(type) {
-		case OpImmediate8:
+		case OpImm8:
 			return 2
 		}
 
-		var hl Operand = OpReg16{reg: RegHL{}}
-		if operand2 == hl {
+		var indexHL Operand = OpIndex{index: IndexReg16{reg: RegHL{}}}
+		if operand2 == indexHL {
 			return 2
 		}
 
@@ -63,6 +84,7 @@ func binaryArithmeticCycles(operand1, operand2 Operand) int {
 	case OpReg16{reg: RegStackPointer{}}:
 		return 4
 	}
+
 	return 0
 }
 
@@ -111,10 +133,12 @@ func unaryArithmeticCycles(operand Operand) int {
 	case OpReg8:
 		return 1
 	}
-	hl := OpReg16{reg: RegHL{}}
-	if operand == hl {
+
+	indexHL := OpIndex{index: IndexReg16{reg: RegHL{}}}
+	if operand == indexHL {
 		return 3
 	}
+
 	return 2
 }
 
