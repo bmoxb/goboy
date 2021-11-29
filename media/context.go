@@ -1,7 +1,9 @@
 package media
 
+import mapset "github.com/deckarep/golang-set"
+
 type Context interface {
-	Update() map[Button]bool
+	Update() mapset.Set
 
 	Plot(x, y int32, col Colour)
 

@@ -3,6 +3,7 @@ package media
 import (
 	"log"
 
+	mapset "github.com/deckarep/golang-set"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -12,7 +13,7 @@ type sdlContext struct {
 	screenScaleFactor int32
 	colourMap         map[Colour][3]uint8
 	keyButtonMap      map[sdl.Keycode]Button
-	buttonsDown       map[Button]bool
+	buttonsDown       mapset.Set
 }
 
 func NewSDL2(title string, width, height, screenScaleFactor int32, colourMap map[Colour][3]uint8, keyButtonMap map[sdl.Keycode]Button) (sdlContext, error) {
@@ -35,15 +36,15 @@ func NewSDL2(title string, width, height, screenScaleFactor int32, colourMap map
 	}
 	log.Println("SDL2 renderer created")
 
-	buttonsDown := map[Button]bool{}
+	buttonsDown := mapset.NewSet()
 	return sdlContext{window, renderer, screenScaleFactor, colourMap, keyButtonMap, buttonsDown}, nil
 }
 
-func (c sdlContext) Update() map[Button]bool {
+func (c sdlContext) Update() mapset.Set {
 	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 		switch t := event.(type) {
 		case *sdl.QuitEvent:
-			return map[Button]bool{BUTTON_QUIT: true}
+			c.buttonsDown.Add(BUTTON_QUIT)
 
 		case *sdl.KeyboardEvent:
 			key := t.Keysym.Sym
@@ -51,9 +52,9 @@ func (c sdlContext) Update() map[Button]bool {
 
 			if present {
 				if t.State == sdl.PRESSED {
-					c.buttonsDown[button] = true
+					c.buttonsDown.Add(button)
 				} else if t.State == sdl.RELEASED {
-					delete(c.buttonsDown, button)
+					c.buttonsDown.Remove(button)
 				}
 			}
 		}

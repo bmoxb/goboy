@@ -7,6 +7,7 @@ import (
 	"github.com/WiredSound/goboy/gameboy"
 	"github.com/WiredSound/goboy/media"
 
+	mapset "github.com/deckarep/golang-set"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -63,7 +64,7 @@ func main() {
 
 	gb := gameboy.New()
 
-	for buttons := map[media.Button]bool{}; !buttons[media.BUTTON_QUIT]; buttons = context.Update() {
+	for buttons := mapset.NewSet(); !buttons.Contains(media.BUTTON_QUIT); buttons = context.Update() {
 		gb.Update(context, buttons)
 	}
 }
