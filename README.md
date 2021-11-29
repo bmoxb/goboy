@@ -23,3 +23,4 @@ GameBoy implemented in [Go](https://golang.org/) using [SDL2](https://github.com
 * https://gbdev.io/pandocs/
 * http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf
 * https://gekkio.fi/files/gb-docs/gbctr.pdf
+* https://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
