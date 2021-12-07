@@ -38,20 +38,20 @@ func TestArithmeticLogicInstrCycles(t *testing.T) {
 	// Test ADD instruction (with additional data):
 
 	for operands, cycles := range fullData {
-		instr := InstrAdd{operand1: operands[0], operand2: operands[1]}
+		instr := InstrADD{operand1: operands[0], operand2: operands[1]}
 		assert.Equal(t, instr.Cycles(), cycles, "Addition instruction '%s' should take %d cycles", instr, cycles)
 	}
 
 	// Test non-ADD instructions (with just register A data):
 
 	otherBuilders := [](func(Operand) Instruction){
-		func(operand Operand) Instruction { return InstrSub{operand} },
-		func(operand Operand) Instruction { return InstrSbc{operand} },
-		func(operand Operand) Instruction { return InstrAnd{operand} },
-		func(operand Operand) Instruction { return InstrAdc{operand} },
-		func(operand Operand) Instruction { return InstrXor{operand} },
-		func(operand Operand) Instruction { return InstrOr{operand} },
-		func(operand Operand) Instruction { return InstrCp{operand} },
+		func(operand Operand) Instruction { return InstrSUB{operand} },
+		func(operand Operand) Instruction { return InstrSBC{operand} },
+		func(operand Operand) Instruction { return InstrAND{operand} },
+		func(operand Operand) Instruction { return InstrADC{operand} },
+		func(operand Operand) Instruction { return InstrXOR{operand} },
+		func(operand Operand) Instruction { return InstrOR{operand} },
+		func(operand Operand) Instruction { return InstrCP{operand} },
 	}
 	for _, builder := range otherBuilders {
 		for operand, cycles := range dataRegA {
@@ -76,8 +76,8 @@ func TestArithmeticLogicInstrCycles(t *testing.T) {
 	}
 
 	incDecBuilder := [](func(Operand) Instruction){
-		func(operand Operand) Instruction { return InstrInc{operand} },
-		func(operand Operand) Instruction { return InstrDec{operand} },
+		func(operand Operand) Instruction { return InstrINC{operand} },
+		func(operand Operand) Instruction { return InstrDEC{operand} },
 	}
 	for _, builder := range incDecBuilder {
 		for operand, cycles := range incDecData {
@@ -85,4 +85,8 @@ func TestArithmeticLogicInstrCycles(t *testing.T) {
 			assert.Equal(t, instr.Cycles(), cycles, "Increase/decrease instruction '%s' should take %d cycles", instr, cycles)
 		}
 	}
+}
+
+func TestJumpInstrCycles(t *testing.T) {
+	// ...
 }
